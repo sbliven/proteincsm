@@ -1018,14 +1018,17 @@ class MoleculeReader:
             raise ValueError("CSM does not support .txt format openbabel conversions")
         if not babel_bond:
             conv.SetOptions("b", conv.INOPTIONS)
-        notatend = conv.ReadFile(obmol, filename)
-        if not notatend:
-            raise ValueError("Error reading file " + filename + " using OpenBabel, with format:", format)
+        
         obmols = []
-        while notatend:
+        notatend = conv.ReadFile(obmol, filename)
+        if obmol.NumAtoms() > 0:
             obmols.append(obmol)
+        while notatend and obmol.NumAtoms() > 0:
             obmol = OBMol()
             notatend = conv.Read(obmol)
+                        obmols.append(obmol)
+            if obmol.NumAtoms() > 0:
+                obmols.append(obmol)
         return obmols
 
 
